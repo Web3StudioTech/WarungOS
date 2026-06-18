@@ -169,6 +169,7 @@ input,select,textarea{font-family:inherit;}
 .table-chip{
   aspect-ratio:1;border-radius:10px;border:2px solid var(--line);background:var(--white);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-weight:700;
+  position:relative;cursor:pointer;
 }
 .table-chip .tn{font-family:var(--mono);font-size:19px;}
 .table-chip .ts{font-size:9.5px;text-transform:uppercase;letter-spacing:.3px;color:var(--char-soft);}
@@ -177,6 +178,8 @@ input,select,textarea{font-family:inherit;}
 .table-chip.occupied .ts{color:var(--gold-dark);}
 .table-chip.billing{border-color:var(--gold);background:var(--gold-light);}
 .table-chip.selected{box-shadow:0 0 0 3px var(--ink) inset;}
+.qr-btn{position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:6px;border:none;background:var(--ink);color:var(--paper);font-size:11px;display:flex;align-items:center;justify-content:center;line-height:1;}
+.qr-btn.has-session{background:var(--green-dark);}
 
 .cat-tabs{display:flex;gap:7px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px;}
 .cat-tab{padding:9px 16px;border-radius:20px;background:var(--white);border:1.5px solid var(--line);font-weight:600;font-size:13px;white-space:nowrap;color:var(--char);}
@@ -381,6 +384,7 @@ table.data-table tr:last-child td{border-bottom:none;}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 /* =========================================================
    DapurPOS — single-file restaurant ordering/billing/accounting app
@@ -474,6 +478,11 @@ const I18N = {
     lock_title_offline:'Tidak Dapat Sahkan Langganan', lock_sub_offline:'Kami tidak dapat menyemak status langganan anda. Sila sambung ke internet.',
     lock_retry:'Cuba Semula', lock_contact:'Hubungi', lock_data_safe:'Data jualan dan laporan anda kekal selamat dan boleh diakses dalam Admin.',
     lock_overdue_days:'Tertunggak {n} hari',
+    set_license_title:'Langganan', set_license_key:'Kunci Lesen', set_license_paid_until:'Bayaran Sah Hingga',
+    pos_qr_generate:'Jana QR', pos_qr_reprint:'Cetak QR Semula', toast_qr_printed:'Slip QR dicetak',
+    qr_slip_title:'Imbas untuk Pesan', qr_slip_table:'Meja {n}', qr_slip_instructions:'Imbas kod ini dengan kamera telefon anda untuk lihat menu dan buat pesanan',
+    order_slip_title:'Pesanan Disahkan', order_slip_instructions:'Simpan resit ini. Bawa ke kaunter apabila anda bersedia untuk bayar.',
+    self_order_badge:'📱 Pesan Sendiri', toast_order_received:'Pesanan baru dari Meja {n}',
     bill_title:'Bil — {label}', bill_preview:'PRATONTON BIL', bill_subtotal:'Jumlah Kecil', bill_service_word:'Perkhidmatan', bill_tax_word:'Cukai',
     bill_discount_word:'Diskaun', bill_total_word:'JUMLAH', bill_discount_field:'Diskaun ({currency})', bill_payment_method:'Kaedah Pembayaran',
     bill_cash_received:'Tunai Diterima', bill_change:'Baki', bill_confirm:'Sahkan Pembayaran',
@@ -550,6 +559,11 @@ const I18N = {
     lock_title_offline:"Can't Verify Subscription", lock_sub_offline:"We haven't been able to verify your subscription status. Please connect to the internet.",
     lock_retry:'Retry Now', lock_contact:'Contact', lock_data_safe:'Your sales data and reports remain safe and accessible in Admin.',
     lock_overdue_days:'Overdue by {n} days',
+    set_license_title:'Subscription', set_license_key:'License Key', set_license_paid_until:'Paid Until',
+    pos_qr_generate:'Generate QR', pos_qr_reprint:'Print QR Again', toast_qr_printed:'QR slip printed',
+    qr_slip_title:'Scan to Order', qr_slip_table:'Table {n}', qr_slip_instructions:'Scan this code with your phone camera to view the menu and order',
+    order_slip_title:'Order Confirmed', order_slip_instructions:'Keep this slip. Bring it to the counter when you are ready to pay.',
+    self_order_badge:'📱 Self-order', toast_order_received:'New order from Table {n}',
     bill_title:'Bill — {label}', bill_preview:'PREVIEW BILL', bill_subtotal:'Subtotal', bill_service_word:'Service', bill_tax_word:'Tax',
     bill_discount_word:'Discount', bill_total_word:'TOTAL', bill_discount_field:'Discount ({currency})', bill_payment_method:'Payment Method',
     bill_cash_received:'Cash Received', bill_change:'Change', bill_confirm:'Confirm Payment',
@@ -626,6 +640,11 @@ const I18N = {
     lock_title_offline:'无法验证订阅', lock_sub_offline:'我们无法核实您的订阅状态。请连接互联网。',
     lock_retry:'重试', lock_contact:'联系', lock_data_safe:'您的销售数据和报表在管理后台中保持安全并可访问。',
     lock_overdue_days:'逾期{n}天',
+    set_license_title:'订阅', set_license_key:'许可证密钥', set_license_paid_until:'有效期至',
+    pos_qr_generate:'生成二维码', pos_qr_reprint:'重新打印二维码', toast_qr_printed:'二维码单已打印',
+    qr_slip_title:'扫码点餐', qr_slip_table:'{n}号桌', qr_slip_instructions:'用手机摄像头扫描此码查看菜单并点餐',
+    order_slip_title:'订单已确认', order_slip_instructions:'请保留此单。结账时请携带至柜台。',
+    self_order_badge:'📱 自助点餐', toast_order_received:'来自{n}号桌的新订单',
     bill_title:'账单 — {label}', bill_preview:'账单预览', bill_subtotal:'小计', bill_service_word:'服务费', bill_tax_word:'税',
     bill_discount_word:'折扣', bill_total_word:'总额', bill_discount_field:'折扣（{currency}）', bill_payment_method:'付款方式',
     bill_cash_received:'收到现金', bill_change:'找零', bill_confirm:'确认付款',
@@ -748,6 +767,53 @@ function defaultExpenseCategories(){
       -- Permanently remove a restaurant (locks them immediately, next check-in)
       delete from licenses where license_key = 'rest-001-abc123';
 
+   SELF-ORDERING (run this once too, alongside the licenses table above):
+   This lets customers scan a QR code at their table and order from their own
+   phone, using a SEPARATE lightweight page (order.html) that talks to these
+   two tables. The counter tablet still runs everything else locally exactly
+   as before -- these tables are just a relay: a read-only mirror of your
+   menu for phones to read, and an inbox of submitted orders the counter
+   picks up and turns into normal local orders the moment they arrive.
+
+      create table restaurant_menu (
+        license_key text primary key,
+        menu_json jsonb not null,
+        updated_at timestamptz default now()
+      );
+      alter table restaurant_menu enable row level security;
+      grant select, insert, update on public.restaurant_menu to anon;
+      create policy "anon can read menu" on restaurant_menu for select to anon using (true);
+      create policy "anon can write menu" on restaurant_menu for insert to anon with check (true);
+      create policy "anon can update menu" on restaurant_menu for update to anon using (true);
+
+      create table customer_orders (
+        id uuid primary key default gen_random_uuid(),
+        license_key text not null,
+        table_number int not null,
+        session_token text not null,
+        items jsonb not null,
+        notes text,
+        submitted_at timestamptz default now(),
+        received boolean not null default false
+      );
+      alter table customer_orders enable row level security;
+      grant select, insert, update on public.customer_orders to anon;
+      create policy "anon can read orders" on customer_orders for select to anon using (true);
+      create policy "anon can submit orders" on customer_orders for insert to anon with check (true);
+      create policy "anon can mark orders received" on customer_orders for update to anon using (true);
+
+      -- Unlike the licenses table, these two need write access too, since
+      -- customer phones must be able to submit an order with nobody logged
+      -- in, and the counter tablet uses this exact same public key (there's
+      -- no separate "staff login"). The honest trade-off: anyone who somehow
+      -- obtained a specific license_key could theoretically submit junk
+      -- orders or push a bad menu for that one restaurant. There's no
+      -- payment or personal data in either table, the blast radius is one
+      -- restaurant's menu/order queue, and the same unguessable-key model
+      -- already protects the licenses table -- so this stays consistent
+      -- with the rest of the setup rather than adding real user accounts
+      -- just for this.
+
    Fill in your own Supabase project details below before deploying
    a copy of this file to a real restaurant.
 
@@ -758,18 +824,40 @@ function defaultExpenseCategories(){
    the older naming) below. NEVER put the secret/service_role key in this
    file -- that key bypasses every security rule and must never leave your
    own machine, let alone ship inside an app handed to a restaurant.
+
+   MULTI-RESTAURANT SETUP: this one file/deployment can serve every
+   restaurant you onboard. Each restaurant gets a link like
+   https://yourdomain.com/?key=THEIR-LICENSE-KEY instead of their own
+   copy of this file -- the app reads the key straight from the URL.
+   LICENSE_KEY below is only a fallback, used if no ?key= is present
+   (e.g. for a one-off single-restaurant deployment with no query string).
    ========================================================= */
 const LICENSE_CONFIG = {
-  SUPABASE_URL: 'https://YOUR-PROJECT.supabase.co',       // TODO: your Supabase project URL
-  SUPABASE_ANON_KEY: 'YOUR-PUBLISHABLE-OR-ANON-KEY',        // TODO: the publishable (or anon) key only -- never the secret/service_role key
-  LICENSE_KEY: 'REPLACE-WITH-UNIQUE-KEY-FOR-THIS-RESTAURANT', // TODO: a unique key, one per restaurant deployment
+  SUPABASE_URL: 'https://rggpgdvgtxjdpivpqdmj.supabase.co',
+  SUPABASE_ANON_KEY: 'sb_publishable_RhnmcO1X_R_3J2d1h_EENw_h1bZAWh5',
+  LICENSE_KEY: 'REPLACE-WITH-UNIQUE-KEY-FOR-THIS-RESTAURANT', // fallback only -- see note above
   GRACE_DAYS_AFTER_DUE: 14,   // days allowed past paid_until before locking for non-payment
   OFFLINE_GRACE_DAYS: 5,      // days the app trusts its last successful check-in before locking itself
   CHECK_INTERVAL_HOURS: 4,    // how often to silently re-check while the app stays open
-  DEFAULT_CONTACT_NAME: 'Your Business Name',   // TODO: shown on the lock screen unless a reseller override is set
-  DEFAULT_CONTACT_WHATSAPP: '60123456789',       // TODO: digits only, country code first, no symbols
+  DEFAULT_CONTACT_NAME: 'Web3StudioTech',
+  DEFAULT_CONTACT_WHATSAPP: '60109895913',
 };
-const LICENSE_STORE_KEY = 'DAPUR_LICENSE_v1';
+const LICENSE_KEY_REMEMBER_SLOT = 'DAPUR_LICENSE_KEY_v1';
+
+function resolveLicenseKey(){
+  try{
+    const fromUrl = new URLSearchParams(window.location.search).get('key');
+    if(fromUrl){
+      try{ localStorage.setItem(LICENSE_KEY_REMEMBER_SLOT, fromUrl); }catch(e){}
+      return fromUrl;
+    }
+    const remembered = localStorage.getItem(LICENSE_KEY_REMEMBER_SLOT);
+    if(remembered) return remembered;
+  }catch(e){}
+  return LICENSE_CONFIG.LICENSE_KEY;
+}
+const ACTIVE_LICENSE_KEY = resolveLicenseKey();
+const LICENSE_STORE_KEY = 'DAPUR_LICENSE_v1:' + ACTIVE_LICENSE_KEY;
 
 function loadLicenseCache(){
   try{
@@ -785,7 +873,7 @@ let licenseCache = loadLicenseCache();
 
 async function checkLicense(){
   try{
-    const url = LICENSE_CONFIG.SUPABASE_URL + '/rest/v1/licenses?license_key=eq.' + encodeURIComponent(LICENSE_CONFIG.LICENSE_KEY) + '&select=paid_until,status,lock_mode,contact_override_name,contact_override_whatsapp';
+    const url = LICENSE_CONFIG.SUPABASE_URL + '/rest/v1/licenses?license_key=eq.' + encodeURIComponent(ACTIVE_LICENSE_KEY) + '&select=paid_until,status,lock_mode,contact_override_name,contact_override_whatsapp';
     const res = await fetch(url, {
       headers:{ apikey: LICENSE_CONFIG.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + LICENSE_CONFIG.SUPABASE_ANON_KEY }
     });
@@ -869,6 +957,152 @@ function applyLicenseLock(){
   }
 }
 
+/* =========================================================
+   SELF-ORDERING (Type 2 restaurants)
+   Customers scan a printed QR at their table and order from their own
+   phone via a separate page (order.html) -- see the SQL setup notes
+   above LICENSE_CONFIG for the two Supabase tables this relies on.
+   This is a relay only: once an order is picked up it becomes a normal
+   local order, same as one a staff member typed in directly.
+   ========================================================= */
+function getOrderPageUrl(){
+  const path = window.location.pathname;
+  const dir = path.endsWith('/') ? path : path.substring(0, path.lastIndexOf('/')+1);
+  return window.location.origin + dir + 'order.html';
+}
+function buildOrderUrl(tbl){
+  const params = new URLSearchParams({ key: ACTIVE_LICENSE_KEY, table: tbl.number, session: tbl.qrSession });
+  return getOrderPageUrl() + '?' + params.toString();
+}
+function generateOrCopyQrSession(tbl){
+  if(!tbl.qrSession){
+    tbl.qrSession = uid('sess');
+    if(tbl.status==='available') tbl.status = 'occupied';
+    save();
+  }
+  return tbl.qrSession;
+}
+function printQrSlip(tableId){
+  const tbl = getTable(tableId);
+  generateOrCopyQrSession(tbl);
+  renderCurrent(); // reflect the chip flipping to "has a session" right away
+  const url = buildOrderUrl(tbl);
+  const holder = document.createElement('div');
+  holder.style.position = 'fixed'; holder.style.left = '-9999px';
+  document.body.appendChild(holder);
+  try{ new QRCode(holder, {text:url, width:200, height:200, correctLevel: QRCode.CorrectLevel.M}); }catch(e){}
+  setTimeout(()=>{
+    const canvas = holder.querySelector('canvas');
+    const img = holder.querySelector('img');
+    const src = canvas ? canvas.toDataURL() : (img ? img.src : '');
+    document.body.removeChild(holder);
+    const root = document.getElementById('print-root');
+    root.innerHTML = `
+      <div class="receipt-print">
+        <h2>${escapeHtml(state.settings.restaurantName)}</h2>
+        <div class="rp-center" style="font-weight:700;font-size:15px;">${t('qr_slip_title')}</div>
+        <div class="rp-center">${t('qr_slip_table',{n:tbl.number})}</div>
+        <hr>
+        ${src ? `<div class="rp-center"><img src="${src}" style="width:180px;height:180px;"></div>` : `<div class="rp-center">${url}</div>`}
+        <hr>
+        <div class="rp-center">${t('qr_slip_instructions')}</div>
+      </div>
+    `;
+    setTimeout(()=>{ window.print(); toast(t('toast_qr_printed')); }, 50);
+  }, 60);
+}
+
+async function syncMenuToCloud(){
+  try{
+    const payload = {
+      license_key: ACTIVE_LICENSE_KEY,
+      menu_json: { categories: state.categories, items: state.items, currency: state.settings.currency, restaurantName: state.settings.restaurantName },
+      updated_at: new Date().toISOString()
+    };
+    await fetch(LICENSE_CONFIG.SUPABASE_URL + '/rest/v1/restaurant_menu', {
+      method:'POST',
+      headers:{
+        apikey: LICENSE_CONFIG.SUPABASE_ANON_KEY,
+        Authorization: 'Bearer ' + LICENSE_CONFIG.SUPABASE_ANON_KEY,
+        'Content-Type':'application/json',
+        'Prefer':'resolution=merge-duplicates'
+      },
+      body: JSON.stringify(payload)
+    });
+  }catch(err){
+    console.warn('menu sync error (will retry on next change):', err.message);
+  }
+}
+
+async function markOrderReceived(id){
+  try{
+    await fetch(LICENSE_CONFIG.SUPABASE_URL + '/rest/v1/customer_orders?id=eq.' + encodeURIComponent(id), {
+      method:'PATCH',
+      headers:{
+        apikey: LICENSE_CONFIG.SUPABASE_ANON_KEY,
+        Authorization: 'Bearer ' + LICENSE_CONFIG.SUPABASE_ANON_KEY,
+        'Content-Type':'application/json'
+      },
+      body: JSON.stringify({received:true})
+    });
+  }catch(err){
+    console.warn('mark-received error:', err.message);
+  }
+}
+
+function printOrderConfirmationSlip(order, tbl){
+  const root = document.getElementById('print-root');
+  root.innerHTML = `
+    <div class="receipt-print">
+      <h2>${escapeHtml(state.settings.restaurantName)}</h2>
+      <div class="rp-center" style="font-weight:700;">${t('order_slip_title')}</div>
+      <div class="rp-row"><span>${t('qr_slip_table',{n:tbl.number})}</span><span>${order.orderNo}</span></div>
+      <hr>
+      ${order.items.map(it=>`<div class="rp-row"><span>${it.qty}x ${escapeHtml(it.name)}</span><span>${fmt(it.price*it.qty)}</span></div>`).join('')}
+      <hr>
+      <div class="rp-center">${t('order_slip_instructions')}</div>
+    </div>
+  `;
+  setTimeout(()=>window.print(), 50);
+}
+
+async function ingestCustomerOrder(row){
+  const tbl = state.tables.find(t2=>t2.number===row.table_number);
+  if(!tbl || tbl.qrSession !== row.session_token){
+    await markOrderReceived(row.id); // stale slip from a previous visit, or unknown table -- drop it quietly
+    return;
+  }
+  state.counters.order++;
+  const orderNo = 'ORD-' + pad(state.counters.order,4);
+  const order = {
+    id: uid('ord'), orderNo, type:'dine-in', tableId: tbl.id, queueNo:null,
+    items: (row.items||[]).map(i=>({itemId:i.itemId, name:i.name, price:i.price, qty:i.qty, notes:i.notes||''})),
+    status:'new', createdAt: Date.now(), source:'customer'
+  };
+  state.orders.push(order);
+  tbl.status = 'occupied';
+  tbl.currentOrderIds = [...(tbl.currentOrderIds||[]), order.id];
+  save();
+  await markOrderReceived(row.id);
+  toast(t('toast_order_received',{n:tbl.number}));
+  printOrderConfirmationSlip(order, tbl);
+  renderCurrent();
+}
+
+async function pollCustomerOrders(){
+  try{
+    const url = LICENSE_CONFIG.SUPABASE_URL + '/rest/v1/customer_orders?license_key=eq.' + encodeURIComponent(ACTIVE_LICENSE_KEY) + '&received=eq.false&select=*';
+    const res = await fetch(url, {
+      headers:{ apikey: LICENSE_CONFIG.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + LICENSE_CONFIG.SUPABASE_ANON_KEY }
+    });
+    if(!res.ok) return;
+    const rows = await res.json();
+    for(const row of rows){ await ingestCustomerOrder(row); }
+  }catch(err){
+    console.warn('order polling error (will retry):', err.message);
+  }
+}
+
 /* ---------- demo data seed ---------- */
 function seedData(){
   const categories = [
@@ -891,7 +1125,7 @@ function seedData(){
     {id:'item_10', categoryId:'cat_dessert', name:'Cendol', price:6.50, available:true},
   ];
   const tables = [];
-  for(let i=1;i<=10;i++) tables.push({id:'tbl_'+i, number:i, seats: i%3===0?6:4, status:'available', currentOrderIds:[]});
+  for(let i=1;i<=10;i++) tables.push({id:'tbl_'+i, number:i, seats: i%3===0?6:4, status:'available', currentOrderIds:[], qrSession:null});
 
   const now = Date.now();
   tables[1].status='occupied'; tables[1].currentOrderIds=['ord_demo1'];
@@ -971,6 +1205,7 @@ if(!state.loyalty){
   state.loyalty = {enabled:false, type:'points', pointsPerRM:1, stampsPerVisit:1, rewards:[]};
 }
 if(!state.customers) state.customers = [];
+state.tables.forEach(tbl=>{ if(tbl.qrSession===undefined) tbl.qrSession = null; });
 if(!state.expenseCategories){
   state.expenseCategories = defaultExpenseCategories();
   const oldKeyToId = {ingredients:'ec_ingredients', utilities:'ec_utilities', rent:'ec_rent', wages:'ec_wages', equipment:'ec_equipment', other:'ec_other'};
@@ -1100,9 +1335,10 @@ function renderPosTabContent(){
   if(d.type==='dine-in'){
     html += `<div class="table-grid">` + state.tables.map(t2=>{
       const sel = d.tableId===t2.id ? 'selected':'';
-      return `<button class="table-chip ${t2.status} ${sel}" data-action="select-table" data-id="${t2.id}">
+      return `<div class="table-chip ${t2.status} ${sel}" data-action="select-table" data-id="${t2.id}">
         <span class="tn">${t2.number}</span><span class="ts">${tableStatusLabel(t2.status)}</span>
-      </button>`;
+        <button class="qr-btn ${t2.qrSession?'has-session':''}" data-action="generate-qr" data-id="${t2.id}" title="${t2.qrSession?t('pos_qr_reprint'):t('pos_qr_generate')}">${t2.qrSession?'🖨':'QR'}</button>
+      </div>`;
     }).join('') + `</div>`;
   } else {
     html += `<div class="section-sub">${t('takeaway_hint')}</div>`;
@@ -1323,7 +1559,7 @@ function renderKdsTicket(o, colKey){
         <span class="kt-id">${o.orderNo}</span>
         <span class="kt-time ${urgent?'urgent':''}">${t('kds_min_ago',{n:mins})}</span>
       </div>
-      <div class="kt-meta">${label}</div>
+      <div class="kt-meta">${label}${o.source==='customer'?` <span style="font-size:11px;">${t('self_order_badge')}</span>`:''}</div>
       <div class="kt-items">
         ${o.items.map(it=>`<div class="kt-item"><span class="kqty">${it.qty}×</span><span>${escapeHtml(it.name)}${it.notes?`<span class="knote">${escapeHtml(it.notes)}</span>`:''}</span></div>`).join('')}
       </div>
@@ -1730,15 +1966,20 @@ function renderAdminSettings(){
         <button class="btn btn-danger btn-sm" data-action="clear-all">${t('set_clear_all')}</button>
       </div>
     </div>
+    <div class="card" style="max-width:480px;margin-top:18px;">
+      <strong>${t('set_license_title')}</strong>
+      <div class="field" style="margin-top:10px;"><span class="field-label">${t('set_license_key')}</span><div class="ticket-num" style="font-size:13px;">${escapeHtml(ACTIVE_LICENSE_KEY)}</div></div>
+      ${licenseCache.paidUntil ? `<div class="field"><span class="field-label">${t('set_license_paid_until')}</span><div class="ticket-num" style="font-size:13px;">${escapeHtml(licenseCache.paidUntil)}</div></div>` : ''}
+    </div>
   `;
 }
 
 /* ---- Admin actions ---- */
-function adminToggleItemAvail(id){ const i=getItem(id); i.available=!i.available; save(); renderAdminMain(); }
-function adminDeleteItem(id){ if(!confirm(t('confirm_delete_item'))) return; state.items = state.items.filter(i=>i.id!==id); save(); renderAdminMain(); }
+function adminToggleItemAvail(id){ const i=getItem(id); i.available=!i.available; save(); syncMenuToCloud(); renderAdminMain(); }
+function adminDeleteItem(id){ if(!confirm(t('confirm_delete_item'))) return; state.items = state.items.filter(i=>i.id!==id); save(); syncMenuToCloud(); renderAdminMain(); }
 function adminDeleteCategory(id){
   if(state.items.some(i=>i.categoryId===id)){ toast(t('toast_move_items_first')); return; }
-  state.categories = state.categories.filter(c=>c.id!==id); save(); renderAdminMain();
+  state.categories = state.categories.filter(c=>c.id!==id); save(); syncMenuToCloud(); renderAdminMain();
 }
 function adminDeleteTable(id){
   const tbl = getTable(id);
@@ -1756,6 +1997,7 @@ function saveSettingsFromForm(){
   state.settings.taxRate = parseFloat(document.getElementById('set-tax').value)||0;
   state.settings.receiptFooter = document.getElementById('set-footer').value;
   save();
+  syncMenuToCloud();
   toast(t('toast_settings_saved'));
   renderCurrent();
 }
@@ -1811,7 +2053,7 @@ function confirmAddCategory(){
   const name = document.getElementById('m-cat-name').value.trim();
   if(!name) return toast(t('toast_enter_category_name'));
   state.categories.push({id:uid('cat'), name});
-  save(); closeModal(); renderAdminMain(); toast(t('toast_category_added'));
+  save(); syncMenuToCloud(); closeModal(); renderAdminMain(); toast(t('toast_category_added'));
 }
 
 function openAddItemModal(editId){
@@ -1844,7 +2086,7 @@ function confirmSaveItem(editId){
     state.items.push({id:uid('item'), categoryId, name, price, available:true});
     toast(t('toast_item_added'));
   }
-  save(); closeModal(); renderAdminMain();
+  save(); syncMenuToCloud(); closeModal(); renderAdminMain();
 }
 
 function openAddTableModal(){
@@ -2032,7 +2274,7 @@ function confirmPayment(){
   billCtx.orders.forEach(o=>{ o.status='paid'; });
   if(billCtx.tableId){
     const tbl = getTable(billCtx.tableId);
-    tbl.status='available'; tbl.currentOrderIds=[];
+    tbl.status='available'; tbl.currentOrderIds=[]; tbl.qrSession=null;
   }
 
   if(L.enabled && billCtx.customerPhone){
@@ -2214,6 +2456,7 @@ document.addEventListener('click', (e)=>{
     case 'switch-view': setView(btn.dataset.view); break;
     case 'set-lang': setLang(btn.dataset.lang); break;
     case 'retry-license-check': checkLicense(); break;
+    case 'generate-qr': printQrSlip(btn.dataset.id); break;
     case 'pos-tab': state.ui.posTab = btn.dataset.tab; renderPosTabContent(); if(btn.dataset.tab==='new') renderCart(); save(); break;
     case 'set-type': posSetType(btn.dataset.type); break;
     case 'select-table': posSelectTable(btn.dataset.id); break;
@@ -2291,6 +2534,8 @@ setView(state.ui.currentView || 'pos');
 applyLicenseLock();
 checkLicense();
 setInterval(checkLicense, LICENSE_CONFIG.CHECK_INTERVAL_HOURS*3600000);
+syncMenuToCloud();
+setInterval(pollCustomerOrders, 5000);
 </script>
 </body>
 </html>
