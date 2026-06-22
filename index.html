@@ -226,28 +226,28 @@ input,select,textarea{font-family:inherit;}
 .cart-actions{padding:14px 16px;display:flex;gap:8px;}
 
 /* ============ KDS VIEW ============ */
-.kds-wrap{background:var(--ink);min-height:calc(100vh - 56px);padding:20px;}
+.kds-wrap{background:var(--paper);min-height:calc(100vh - 56px);padding:20px;}
 .kds-board{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;}
 .kds-col-head{display:flex;align-items:center;gap:9px;margin-bottom:12px;padding:0 4px;}
-.kds-col-head h3{color:var(--paper);font-family:var(--display);font-weight:600;font-size:17px;margin:0;}
-.kds-col-head .cnt{font-family:var(--mono);background:var(--ink-soft);color:var(--paper-3);padding:2px 9px;border-radius:20px;font-size:12.5px;font-weight:700;}
+.kds-col-head h3{color:var(--green-dark);font-family:var(--display);font-weight:600;font-size:17px;margin:0;}
+.kds-col-head .cnt{font-family:var(--mono);background:var(--green-light);color:var(--green-dark);padding:2px 9px;border-radius:20px;font-size:12.5px;font-weight:700;}
 .kds-col{min-height:200px;}
 .kds-cards{display:flex;flex-direction:column;gap:12px;}
 .kds-ticket{
-  background:#1C2E23;border-radius:8px;padding:14px;border:1.5px solid #2F4439;color:var(--paper);
-  position:relative;
+  background:var(--white);border-radius:8px;padding:14px;border:1.5px solid var(--line);color:var(--char);
+  position:relative;box-shadow:var(--shadow);
 }
 .kds-ticket.urgent{border-color:var(--red);box-shadow:0 0 0 1px var(--red);}
 .kt-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-.kt-id{font-family:var(--mono);font-weight:700;font-size:14px;color:var(--gold);}
-.kt-time{font-family:var(--mono);font-size:11.5px;color:#8FA89A;}
+.kt-id{font-family:var(--mono);font-weight:700;font-size:14px;color:var(--gold-dark);}
+.kt-time{font-family:var(--mono);font-size:11.5px;color:var(--char-soft);}
 .kt-time.urgent{color:var(--red);font-weight:700;}
-.kt-meta{font-size:12px;color:#B9C4BA;margin-bottom:10px;text-transform:uppercase;letter-spacing:.3px;font-weight:700;}
+.kt-meta{font-size:12px;color:var(--char-soft);margin-bottom:10px;text-transform:uppercase;letter-spacing:.3px;font-weight:700;}
 .kt-items{margin-bottom:12px;}
-.kt-item{display:flex;gap:8px;padding:4px 0;font-size:13.5px;border-bottom:1px solid #2C3F34;}
+.kt-item{display:flex;gap:8px;padding:4px 0;font-size:13.5px;border-bottom:1px solid var(--line);}
 .kt-item:last-child{border-bottom:none;}
 .kt-item .kqty{font-family:var(--mono);font-weight:700;color:var(--sage);min-width:24px;}
-.kt-item .knote{display:block;font-size:11.5px;color:var(--gold);font-style:italic;margin-top:1px;}
+.kt-item .knote{display:block;font-size:11.5px;color:var(--gold-dark);font-style:italic;margin-top:1px;}
 .kt-action{width:100%;}
 
 /* ============ ADMIN VIEW ============ */
@@ -460,7 +460,7 @@ const I18N = {
     modal_add_expense:'Tambah Perbelanjaan', modal_date:'Tarikh', modal_description:'Penerangan', modal_amount:'Jumlah',
     expcat_ingredients:'Bahan Mentah', expcat_utilities:'Utiliti', expcat_rent:'Sewa', expcat_wages:'Gaji Pekerja', expcat_equipment:'Peralatan', expcat_other:'Lain-lain', expcat_packaging:'Pembungkusan', expcat_gas:'Gas',
     exp_fixed_title:'Kos Tetap', exp_variable_title:'Kos Berubah-ubah', exp_add_fixed:'+ Tambah Kos Tetap', exp_add_variable:'+ Tambah Kos Berubah',
-    modal_add_cost_item:'Tambah Item Kos', rep_fixed_total:'Tetap: {amount}', rep_variable_total:'Berubah: {amount}',
+    modal_add_cost_item:'Tambah Item Kos', rep_fixed_total:'Tetap: {amount}', rep_variable_total:'Berubah: {amount}', exp_cat_amount_optional:'pilihan', filter_all:'Semua',
     toast_cost_item_added:'Item kos ditambah', toast_move_expenses_first:'Pindah atau padam perbelanjaan menggunakan item ini dahulu',
     admin_nav_loyalty:'Kesetiaan', loy_title:'Program Kesetiaan', loy_subtitle:'Reka program ganjaran anda sendiri untuk pelanggan tetap.',
     loy_enable:'Aktifkan Program Kesetiaan', loy_type_label:'Jenis Program', loy_type_points:'Mata', loy_type_stamps:'Setem',
@@ -541,7 +541,7 @@ const I18N = {
     modal_add_expense:'Add Expense', modal_date:'Date', modal_description:'Description', modal_amount:'Amount',
     expcat_ingredients:'Ingredients', expcat_utilities:'Utilities', expcat_rent:'Rent', expcat_wages:'Staff Wages', expcat_equipment:'Equipment', expcat_other:'Other', expcat_packaging:'Packaging', expcat_gas:'Gas',
     exp_fixed_title:'Fixed costs', exp_variable_title:'Variable costs', exp_add_fixed:'+ Add Fixed Cost', exp_add_variable:'+ Add Variable Cost',
-    modal_add_cost_item:'Add Cost Item', rep_fixed_total:'Fixed: {amount}', rep_variable_total:'Variable: {amount}',
+    modal_add_cost_item:'Add Cost Item', rep_fixed_total:'Fixed: {amount}', rep_variable_total:'Variable: {amount}', exp_cat_amount_optional:'optional', filter_all:'All',
     toast_cost_item_added:'Cost item added', toast_move_expenses_first:'Move or delete expenses using this item first',
     admin_nav_loyalty:'Loyalty', loy_title:'Loyalty Program', loy_subtitle:'Design your own rewards program for repeat customers.',
     loy_enable:'Enable Loyalty Program', loy_type_label:'Program Type', loy_type_points:'Points', loy_type_stamps:'Stamps',
@@ -622,7 +622,7 @@ const I18N = {
     modal_add_expense:'添加支出', modal_date:'日期', modal_description:'说明', modal_amount:'金额',
     expcat_ingredients:'食材', expcat_utilities:'水电费', expcat_rent:'租金', expcat_wages:'员工工资', expcat_equipment:'设备', expcat_other:'其他', expcat_packaging:'包装', expcat_gas:'燃气',
     exp_fixed_title:'固定成本', exp_variable_title:'变动成本', exp_add_fixed:'+ 添加固定成本', exp_add_variable:'+ 添加变动成本',
-    modal_add_cost_item:'添加成本项目', rep_fixed_total:'固定: {amount}', rep_variable_total:'变动: {amount}',
+    modal_add_cost_item:'添加成本项目', rep_fixed_total:'固定: {amount}', rep_variable_total:'变动: {amount}', exp_cat_amount_optional:'可选', filter_all:'全部',
     toast_cost_item_added:'成本项目已添加', toast_move_expenses_first:'请先移动或删除使用此项目的支出',
     admin_nav_loyalty:'会员计划', loy_title:'会员忠诚计划', loy_subtitle:'为常客设计您自己的奖励计划。',
     loy_enable:'启用会员忠诚计划', loy_type_label:'计划类型', loy_type_points:'积分', loy_type_stamps:'盖章卡',
@@ -1678,7 +1678,9 @@ function renderAdminOverview(){
   `;
 }
 
+let menuItemFilter = 'all';
 function renderAdminMenu(){
+  const filteredItems = menuItemFilter==='all' ? state.items : state.items.filter(i=>i.categoryId===menuItemFilter);
   let html = `
     <div class="section-title">${t('menu_title')}</div>
     <div class="section-sub">${t('menu_subtitle')}</div>
@@ -1696,9 +1698,13 @@ function renderAdminMenu(){
         <strong>${t('menu_items')}</strong>
         <button class="btn btn-primary btn-sm" data-action="open-add-item">${t('menu_add_item')}</button>
       </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+        <button class="range-btn ${menuItemFilter==='all'?'active':''}" data-action="set-menu-filter" data-cat="all">${t('filter_all')}</button>
+        ${state.categories.map(c=>`<button class="range-btn ${menuItemFilter===c.id?'active':''}" data-action="set-menu-filter" data-cat="${c.id}">${escapeHtml(c.name)}</button>`).join('')}
+      </div>
       <table class="data-table">
         <tr><th>${t('col_name')}</th><th>${t('col_category')}</th><th>${t('col_price')}</th><th>${t('col_available')}</th><th></th></tr>
-        ${state.items.map(i=>`
+        ${filteredItems.map(i=>`
           <tr>
             <td>${escapeHtml(i.name)}</td>
             <td>${escapeHtml(getCategory(i.categoryId)?.name||'—')}</td>
@@ -1706,7 +1712,7 @@ function renderAdminMenu(){
             <td><span class="toggle ${i.available?'on':''}" data-action="toggle-item" data-id="${i.id}"></span></td>
             <td class="row-actions"><button class="btn btn-outline btn-sm" data-action="open-edit-item" data-id="${i.id}">${t('btn_edit')}</button><button class="btn btn-danger btn-sm" data-action="delete-item" data-id="${i.id}">${t('btn_delete')}</button></td>
           </tr>
-        `).join('')}
+        `).join('') || `<tr><td colspan="5" style="text-align:center;color:var(--char-soft);padding:24px;">—</td></tr>`}
       </table>
     </div>
   `;
@@ -2149,6 +2155,7 @@ function openAddExpCategoryModal(group){
       <div class="modal-head"><h3>${t('modal_add_cost_item')}</h3><button class="modal-close" data-action="close-modal">×</button></div>
       <div class="modal-body">
         <div class="field"><span class="field-label">${t('modal_item_name')}</span><input class="input" id="m-expcat-name" placeholder="e.g. Internet"></div>
+        <div class="field"><span class="field-label">${t('modal_amount')} (${state.settings.currency}) — ${t('exp_cat_amount_optional')}</span><input class="input" type="number" step="0.10" id="m-expcat-amount" placeholder="0.00"></div>
       </div>
       <div class="modal-foot"><button class="btn btn-outline" data-action="close-modal">${t('modal_cancel')}</button><button class="btn btn-primary" data-action="confirm-add-exp-category">${t('modal_add_cost_item')}</button></div>
     </div>
@@ -2156,8 +2163,13 @@ function openAddExpCategoryModal(group){
 }
 function confirmAddExpCategory(){
   const name = document.getElementById('m-expcat-name').value.trim();
+  const amount = parseFloat(document.getElementById('m-expcat-amount').value);
   if(!name) return toast(t('toast_enter_item_name'));
-  state.expenseCategories.push({id:uid('ec'), name, group:pendingExpCatGroup});
+  const cat = {id:uid('ec'), name, group:pendingExpCatGroup};
+  state.expenseCategories.push(cat);
+  if(!isNaN(amount) && amount>0){
+    state.expenses.push({id:uid('exp'), date:todayKey(), categoryId:cat.id, description:name, amount});
+  }
   save(); closeModal(); renderAdminMain(); toast(t('toast_cost_item_added'));
 }
 function adminDeleteExpCategory(id){
@@ -2475,6 +2487,7 @@ document.addEventListener('click', (e)=>{
 
     case 'admin-tab': state.ui.adminTab = btn.dataset.tab; renderAdminMain(); save(); break;
     case 'toggle-item': adminToggleItemAvail(btn.dataset.id); break;
+    case 'set-menu-filter': menuItemFilter = btn.dataset.cat; renderAdminMain(); break;
     case 'delete-item': adminDeleteItem(btn.dataset.id); break;
     case 'open-edit-item': openAddItemModal(btn.dataset.id); break;
     case 'open-add-item': openAddItemModal(null); break;
